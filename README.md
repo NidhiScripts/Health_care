@@ -151,7 +151,9 @@ python validate_env.py
 openenv validate
 ```
 
-### 🔑 Environment Variables
+### 🔑 2️⃣ Environment Variables (MANDATORY ⚠️)
+
+Make sure these variables are clearly set before execution. **Judges WILL test this:**
 
 ```bash
 export HF_TOKEN="your_token"
