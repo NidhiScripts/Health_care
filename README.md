@@ -8,27 +8,58 @@ app_file: inference.py
 pinned: false
 ---
 
-# Healthcare Assistant RL Environment 🩺
+# 🩺 Healthcare Assistant RL Environment
 
-This is an **OpenEnv-compliant Reinforcement Learning environment** designed to simulate a clinical decision assistant. The agent's goal is to accurately diagnose a patient based on their symptoms, medical history, and medications by ordering medical tests. The objective is to maximize diagnostic accuracy while minimizing the number of tests requested (cost) and the time taken.
+## 🚨 Problem Statement
 
-## Observation Space
+In real-world clinical settings, doctors often rely on multiple diagnostic tests, which can:
+- Increase patient cost 💰
+- Delay diagnosis ⏳
+- Lead to redundant testing 🔁
 
-The environment returns an Observation object containing:
-- symptoms (List[str])
-- medical_history (List[str])
-- current_medication (List[str])
-- tests_done (List[str])
-- test_results (Dict[str, str])
-- step_count (int)
+There is a need for an intelligent system that can **recommend the optimal sequence of medical tests** while ensuring high diagnostic accuracy.
 
-## Action Space
+---
 
-The agent can perform two types of actions:
-1. recommend_test(test_name)
-2. diagnose(disease_name)
+## 💡 Solution
 
-Action format:
+We designed an **OpenEnv-compliant Reinforcement Learning environment** that simulates clinical decision-making.
+
+The agent:
+- Observes patient data (symptoms, history, medications)
+- Selects diagnostic tests step-by-step
+- Decides when to stop and diagnose
+
+🎯 Goal:
+> Maximize diagnostic accuracy while minimizing cost and time.
+
+---
+
+## 🧠 Why Reinforcement Learning?
+
+Healthcare diagnosis is a **sequential decision problem**:
+
+```text
+Symptoms → Test → Result → Next Test → Diagnosis
+```
+
+RL is ideal because:
+- Each action affects future decisions
+- There is a trade-off between exploration (tests) and efficiency
+- Rewards guide optimal strategies
+
+### 📦 Observation Space
+
+Observation:
+- `symptoms`: List[str]
+- `medical_history`: List[str]
+- `current_medication`: List[str]
+- `tests_done`: List[str]
+- `test_results`: Dict[str, str]
+- `step_count`: int
+
+### ⚙️ Action Space
+
 ```json
 {
   "action_type": "test" | "diagnose",
@@ -36,53 +67,127 @@ Action format:
 }
 ```
 
-## Reward Settings
+Actions:
+- `test` → Request a diagnostic test
+- `diagnose` → Predict final disease
 
-- *The reward function is designed such that the maximum achievable reward corresponds to correct diagnosis with minimal tests and steps.*
-- **+10** → correct diagnosis
-- **-10** → wrong diagnosis
-- **-2** → each test
-- **-1** → each step
-- **+2** → useful test (yields abnormal specific result)
-- **-5** → repeated test
-- Implicit **+2/+1** bonuses for correct diagnosis in harder ambiguous cases for utilizing context.
-- Explicit penalties (-3, -5) for invalid actions or diagnoses.
+### 🎯 Reward Function
 
-## Tasks
+Designed to balance accuracy vs efficiency:
 
-The environment defines three tasks:
-- Easy: Clear symptoms, minimal ambiguity.
-- Medium: Overlapping symptoms requiring 1–2 tests.
-- Hard: Ambiguous cases with medical history and medication influence.
+| Action | Reward |
+|--------|--------|
+| Correct diagnosis | +10 |
+| Wrong diagnosis | -10 |
+| Each test | -2 |
+| Each step | -1 |
+| Useful test | +2 |
+| Repeated test | -5 |
 
-## Baseline Results
+👉 Encourages:
+- Fewer tests
+- Faster decisions
+- Correct diagnosis
 
-Example performance using the baseline model (`gpt-4.1-mini` via native inference format):
-- Easy: 0.9
-- Medium: 0.7
-- Hard: 0.5
+### 🧪 Tasks & Difficulty Levels
 
-## Setup and Run
+| Task | Description |
+|------|-------------|
+| Easy | Clear symptoms, direct diagnosis |
+| Medium | Overlapping symptoms |
+| Hard | Ambiguous + medical history influence |
 
-1. `pip install -r requirements.txt`
-2. Run validation sweeps:
+### 🧮 Grading System
+
+Each episode is scored between 0.0 – 1.0:
+
+| Score | Meaning |
+|-------|---------|
+| 1.0 | Optimal (≤2 tests + correct diagnosis) |
+| 0.7 | Correct but more tests |
+| 0.5 | Late diagnosis |
+| 0.0 | Incorrect / timeout |
+
+### 📊 Baseline Results
+
+Using `gpt-4.1-mini`:
+
+| Task | Score |
+|------|-------|
+| Easy | 1.0 |
+| Medium | 0.7 |
+| Hard | 0.5–0.7 |
+
+### ▶️ Example Execution
+
+```text
+[START] task=medium
+[STEP] step=1 → Blood test
+[STEP] step=2 → ECG
+[STEP] step=3 → Chest X-ray
+[STEP] step=4 → Diagnose: Asthma
+[END] score=0.7
+```
+
+### 🏗️ System Architecture
+
+```text
+LLM (decision making)
+        ↓
+Rule-based validation (safety)
+        ↓
+OpenEnv Environment (simulation)
+        ↓
+Reward + Grader
+```
+
+---
+
+## ⚙️ Setup Instructions
+
 ```bash
+pip install -r requirements.txt
 python validate_env.py
 openenv validate
 ```
-3. Set environment variables:
+
+### 🔑 Environment Variables
+
 ```bash
 export HF_TOKEN="your_token"
 export API_BASE_URL="https://router.huggingface.co/v1"
 export MODEL_NAME="gpt-4.1-mini"
 ```
-*(Windows → use set instead of export)*
-4. Run inference locally: `python inference.py`
 
-## Docker & HF Space Compatibility
+### 🚀 Run Inference
 
-This environment natively supports Hugging Face spaces:
+```bash
+python inference.py
+```
+
+### 🐳 Docker Support
+
 ```bash
 docker build -t health-env .
 docker run -e HF_TOKEN="your_token" health-env
 ```
+
+### 🌍 Deployment
+
+Deployed on Hugging Face Spaces with containerized execution.
+
+---
+
+## 🧠 Key Features
+
+- OpenEnv compliant environment
+- Sequential decision-making using RL
+- Explainable step-by-step diagnosis
+- Cost-aware testing strategy
+- Fully containerized + reproducible
+
+## 🚀 Future Work
+
+- Integration with real medical datasets
+- Multi-disease diagnosis expansion
+- Mobile/web clinical assistant interface
