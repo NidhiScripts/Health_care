@@ -1,0 +1,18 @@
+name: Healthcare-RL-Assistant
+description: Provide optimal medical test sequences to minimize cost and time while maximizing diagnostic accuracy for 5 simulated diseases.
+version: "1.0"
+metrics:
+  - Diagnosis Correctness
+  - Test Efficiency
+action_schema: Action
+observation_schema: Observation
+tasks:
+  - id: easy_case
+    description: "Easy difficulty cases with classic presentation and no confounding history."
+    config: { "difficulty": "easy" }
+  - id: medium_case
+    description: "Medium difficulty cases with overlapping symptoms requiring specific tests."
+    config: { "difficulty": "medium" }
+  - id: hard_case
+    description: "Hard difficulty cases with confusing medical backgrounds and ambiguous symptoms."
+    config: { "difficulty": "hard" }

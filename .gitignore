@@ -1,0 +1,4 @@
+healthcare-openenv/
+__pycache__/
+*.log
+.env
