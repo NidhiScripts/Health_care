@@ -33,6 +33,8 @@ The agent:
 🎯 Goal:
 > Maximize diagnostic accuracy while minimizing cost and time.
 
+💡 **Impact:** This system can reduce unnecessary diagnostic tests, lower healthcare costs, and improve decision efficiency in real-world clinical workflows.
+
 ---
 
 ## 🧠 Why Reinforcement Learning?
@@ -99,7 +101,7 @@ Designed to balance accuracy vs efficiency:
 
 ### 🧮 Grading System
 
-Each episode is scored between 0.0 – 1.0:
+Each episode is scored between **0.0 – 1.0**:
 
 | Score | Meaning |
 |-------|---------|
@@ -128,6 +130,14 @@ Using `gpt-4.1-mini`:
 [STEP] step=4 → Diagnose: Asthma
 [END] score=0.7
 ```
+
+### 🔄 How It Works
+
+1. The agent observes the patient state (symptoms, history, medications)  
+2. It selects a diagnostic test  
+3. The environment returns test results  
+4. The agent iteratively refines its decision  
+5. It outputs a final diagnosis  
 
 ### 🏗️ System Architecture
 
@@ -176,13 +186,14 @@ docker run -e HF_TOKEN="your_token" health-env
 
 ### 🌍 Deployment
 
-Deployed on Hugging Face Spaces with containerized execution.
+Deployed on Hugging Face Spaces as a containerized application.
 
 ---
 
 ## 🧠 Key Features
 
 - OpenEnv compliant environment
+- Hybrid decision system combining LLM reasoning with rule-based validation
 - Sequential decision-making using RL
 - Explainable step-by-step diagnosis
 - Cost-aware testing strategy
