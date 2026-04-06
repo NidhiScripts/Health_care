@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Clinical Decision Assistant</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="glass-container">
+        <header class="dashboard-header">
+            <div class="logo-circle">AI</div>
+            <h1>AI Clinical Decision Assistant</h1>
+            <p>Optimizing medical test sequences using intelligent agents</p>
+        </header>
+
+        <main>
+            <div class="controls-panel card glass-card">
+                <div class="select-wrapper">
+                    <select id="difficulty" class="input-pill">
+                        <option value="easy">🔵 Easy Case</option>
+                        <option value="medium">🟡 Medium Case</option>
+                        <option value="hard">🔴 Hard Case</option>
+                    </select>
+                </div>
+                <button id="run-btn" class="btn-primary pill-btn">Run Diagnosis</button>
+            </div>
+
+            <div id="loading" class="hidden">
+                <div class="loader-pulse"></div>
+                <p>Analyzing patient case...</p>
+            </div>
+
+            <div id="results" class="hidden">
+                <div class="trace-section">
+                    <h2 class="section-title">Diagnosis Trace</h2>
+                    <div class="steps-container" id="steps-container">
+                        <!-- Step cards injected here sequentially via script.js -->
+                    </div>
+                </div>
+
+                <div class="final-panel card glass-card" id="final-output">
+                    <h3 class="section-title">Final Result</h3>
+                    <div class="stats-grid">
+                        <div class="stat-box">
+                            <span class="stat-icon">🩺</span>
+                            <span class="stat-label">Final Diagnosis</span>
+                            <span class="stat-value highlight" id="final-diagnosis">-</span>
+                        </div>
+                        <div class="stat-box">
+                            <span class="stat-icon">📊</span>
+                            <span class="stat-label">Total Steps</span>
+                            <span class="stat-value" id="total-steps">-</span>
+                        </div>
+                        <div class="stat-box">
+                            <span class="stat-icon">💰</span>
+                            <span class="stat-label">Total Reward</span>
+                            <span class="stat-value" id="total-reward">-</span>
+                        </div>
+                        <div class="stat-box" id="score-box">
+                            <span class="stat-icon">🎯</span>
+                            <span class="stat-label">Performance Score</span>
+                            <span class="stat-value score-text" id="final-score">- / 1.0</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- External Script JS -->
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
